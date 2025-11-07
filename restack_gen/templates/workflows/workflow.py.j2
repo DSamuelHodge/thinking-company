@@ -6,9 +6,6 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 from restack_ai import workflow
-{%- if with_functions %}
-from restack_ai.workflow import workflow_run
-{%- endif %}
 
 
 class {{ name }}Input(BaseModel):
