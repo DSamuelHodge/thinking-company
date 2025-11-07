@@ -1,0 +1,38 @@
+[project]
+name = "{{ project_name }}"
+version = "0.1.0"
+python_version = "{{ python_version }}"
+{% if project_description %}description = "{{ project_description }}"
+{% endif %}
+[structure]
+type = "component"
+agents_dir = "agents"
+workflows_dir = "workflows"
+functions_dir = "functions"
+
+[retry]
+max_attempts = 3
+initial_interval = 1.0
+backoff_coefficient = 2.0
+max_interval = 10.0
+jitter = true
+
+[timeout]
+schedule_to_close = 600
+start_to_close = 300
+schedule_to_start = 30
+
+[logging]
+level = "INFO"
+format = "json"
+include_timestamp = true
+include_caller = false
+
+[llm]
+default_provider = "gemini"
+default_model = "gemini-1.5-pro"
+max_tokens = 1024
+temperature = 0.2
+
+[tool_server]
+fastmcp_enabled = true

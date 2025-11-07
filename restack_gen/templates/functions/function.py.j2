@@ -1,0 +1,58 @@
+"""{{ name }} function implementation."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from pydantic import BaseModel, Field
+from restack_ai import function
+
+
+class {{ name }}Input(BaseModel):
+    """Input schema for {{ name }} function."""
+
+    data: dict[str, Any] = Field(default_factory=dict, description="Input data for function")
+
+
+class {{ name }}Output(BaseModel):
+    """Output schema for {{ name }} function."""
+
+    result: dict[str, Any] = Field(default_factory=dict, description="Function execution result")
+
+
+@function.defn(name="{{ name | snake_case }}")
+{%- if pure %}
+async def {{ name | snake_case }}(input_data: {{ name }}Input) -> {{ name }}Output:
+{%- else %}
+class {{ name }}:
+    """{{ description or name + ' function' }}."""
+
+    async def run(self, input_data: {{ name }}Input) -> {{ name }}Output:
+{%- endif %}
+        """
+        Execute the function.
+
+        Args:
+            input_data: Input data for the function
+
+        Returns:
+            {{ name }}Output: Function execution result
+
+        Raises:
+            Exception: If function execution fails
+        """
+{%- if timeout %}
+        # Timeout configuration: {{ timeout }}s
+{%- endif %}
+        try:
+            # TODO: Implement function logic
+            result = {
+                "status": "success",
+                "processed_data": input_data.data,
+            }
+
+            return {{ name }}Output(result=result)
+
+        except Exception as error:
+            # Log error and re-raise
+            raise Exception(f"{{ name }} function failed: {error}") from error

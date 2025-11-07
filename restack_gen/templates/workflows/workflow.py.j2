@@ -1,0 +1,81 @@
+"""{{ name }} workflow implementation."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from pydantic import BaseModel, Field
+from restack_ai import workflow
+{%- if with_functions %}
+from restack_ai.workflow import workflow_run
+{%- endif %}
+
+
+class {{ name }}Input(BaseModel):
+    """Input schema for {{ name }} workflow."""
+
+    data: dict[str, Any] = Field(default_factory=dict, description="Input data for workflow")
+
+
+class {{ name }}Output(BaseModel):
+    """Output schema for {{ name }} workflow."""
+
+    result: dict[str, Any] = Field(default_factory=dict, description="Workflow execution result")
+    steps_completed: int = Field(default=0, description="Number of steps completed")
+
+
+@workflow.defn(name="{{ name | snake_case }}")
+class {{ name }}:
+    """{{ description or name + ' workflow' }}."""
+
+    @workflow.run
+    async def run(self, input_data: {{ name }}Input) -> {{ name }}Output:
+        """
+        Execute the workflow.
+
+        Args:
+            input_data: Input data for the workflow
+
+        Returns:
+            {{ name }}Output: Workflow execution result
+
+        Raises:
+            Exception: If workflow execution fails
+        """
+{%- if timeout %}
+        # Timeout configuration: {{ timeout }}s
+{%- endif %}
+        workflow.logger.info(
+            "Starting {{ name | snake_case }} workflow",
+            extra={"input_data": input_data.model_dump()},
+        )
+
+        try:
+            # TODO: Implement workflow logic
+{%- if with_functions %}
+            # Example: Call a function
+            # result = await workflow.execute_activity(
+            #     your_function,
+            #     input_data.data,
+            #     start_to_close_timeout=timedelta(seconds=30),
+            # )
+{%- endif %}
+
+            steps_completed = 1
+
+            workflow.logger.info(
+                "Completed {{ name | snake_case }} workflow",
+                extra={"steps_completed": steps_completed},
+            )
+
+            return {{ name }}Output(
+                result={"status": "success", "data": input_data.data},
+                steps_completed=steps_completed,
+            )
+
+        except Exception as error:
+            workflow.logger.error(
+                "{{ name | snake_case }} workflow failed",
+                extra={"error": str(error)},
+            )
+            raise

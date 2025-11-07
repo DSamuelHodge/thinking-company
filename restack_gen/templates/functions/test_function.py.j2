@@ -1,0 +1,81 @@
+"""Tests for {{ name }} function."""
+
+import pytest
+
+from {{ package_name }}.functions.{{ name | snake_case }} import {%- if pure %}{{ name | snake_case }}{%- else %}{{ name }}{%- endif %}, {{ name }}Input, {{ name }}Output
+
+
+class Test{{ name }}:
+    """Test suite for {{ name }} function."""
+
+{%- if not pure %}
+    @pytest.fixture
+    def function(self):
+        """Create function instance for testing."""
+        return {{ name }}()
+{%- endif %}
+
+    @pytest.fixture
+    def valid_input(self):
+        """Create valid input for testing."""
+        return {{ name }}Input(data={"key": "value"})
+
+{%- if pure %}
+    async def test_run_with_valid_input(self, valid_input):
+        """Test function execution with valid input."""
+        output = await {{ name | snake_case }}(valid_input)
+
+        assert isinstance(output, {{ name }}Output)
+        assert output.result["status"] == "success"
+{%- else %}
+    async def test_run_with_valid_input(self, function, valid_input):
+        """Test function execution with valid input."""
+        output = await function.run(valid_input)
+
+        assert isinstance(output, {{ name }}Output)
+        assert output.result["status"] == "success"
+{%- endif %}
+
+    async def test_input_validation(self):
+        """Test input validation with invalid data."""
+        # Input with missing or invalid fields should work with defaults
+        input_data = {{ name }}Input()
+        assert input_data.data == {}
+
+{%- if pure %}
+    async def test_output_schema(self, valid_input):
+        """Test output conforms to schema."""
+        output = await {{ name | snake_case }}(valid_input)
+
+        # Verify all required fields present
+        assert hasattr(output, "result")
+        assert isinstance(output.result, dict)
+
+    async def test_error_handling(self):
+        """Test function handles errors correctly."""
+        # Test with potentially problematic input
+        error_input = {{ name }}Input(data={"error": "trigger"})
+
+        try:
+            await {{ name | snake_case }}(error_input)
+        except Exception as e:
+            assert "{{ name }}" in str(e) or "function failed" in str(e)
+{%- else %}
+    async def test_output_schema(self, function, valid_input):
+        """Test output conforms to schema."""
+        output = await function.run(valid_input)
+
+        # Verify all required fields present
+        assert hasattr(output, "result")
+        assert isinstance(output.result, dict)
+
+    async def test_error_handling(self, function):
+        """Test function handles errors correctly."""
+        # Test with potentially problematic input
+        error_input = {{ name }}Input(data={"error": "trigger"})
+
+        try:
+            await function.run(error_input)
+        except Exception as e:
+            assert "{{ name }}" in str(e) or "function failed" in str(e)
+{%- endif %}

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{ package_name }}"
+version = "0.1.0"
+description = "{{ project_description or "Generated with Restack Gen CLI" }}"
+readme = "README.md"
+requires-python = ">={{ python_version }}"
+dependencies = [
+    "click>=8.1.0,<9.0.0",
+    "pydantic>=2.0.0,<3.0.0",
+    "restack-ai>=0.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+app = "{{ package_name }}.app:main"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["."]

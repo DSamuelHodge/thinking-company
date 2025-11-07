@@ -1,0 +1,48 @@
+"""Tests for {{ name }} agent."""
+
+import pytest
+
+from {{ package_name }}.agents.{{ name | snake_case }} import {{ name }}, {{ name }}Input, {{ name }}Output
+
+
+class Test{{ name }}:
+    """Test suite for {{ name }} agent."""
+
+    @pytest.fixture
+    def agent(self):
+        """Create agent instance for testing."""
+        return {{ name }}()
+
+    @pytest.fixture
+    def valid_input(self):
+        """Create valid input for testing."""
+        return {{ name }}Input(message="Test message")
+
+    async def test_run_with_valid_input(self, agent, valid_input):
+        """Test agent execution with valid input."""
+        output = await agent.run(valid_input)
+
+        assert isinstance(output, {{ name }}Output)
+        assert output.result
+        assert "metadata" in output.model_dump()
+
+    async def test_run_returns_correct_metadata(self, agent, valid_input):
+        """Test agent returns correct metadata."""
+        output = await agent.run(valid_input)
+
+        assert output.metadata["agent_name"] == "{{ name | snake_case }}"
+        assert output.metadata["input_length"] == len(valid_input.message)
+
+    async def test_input_validation(self):
+        """Test input validation with invalid data."""
+        with pytest.raises(Exception):
+            {{ name }}Input()  # Missing required message field
+
+    async def test_output_schema(self, agent, valid_input):
+        """Test output conforms to schema."""
+        output = await agent.run(valid_input)
+
+        # Verify all required fields present
+        assert hasattr(output, "result")
+        assert hasattr(output, "metadata")
+        assert isinstance(output.metadata, dict)

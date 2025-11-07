@@ -1,0 +1,66 @@
+"""Tests for {{ name }} workflow."""
+
+import pytest
+from unittest.mock import AsyncMock, patch
+
+from {{ package_name }}.workflows.{{ name | snake_case }} import {{ name }}, {{ name }}Input, {{ name }}Output
+
+
+class Test{{ name }}:
+    """Test suite for {{ name }} workflow."""
+
+    @pytest.fixture
+    def workflow(self):
+        """Create workflow instance for testing."""
+        return {{ name }}()
+
+    @pytest.fixture
+    def valid_input(self):
+        """Create valid input for testing."""
+        return {{ name }}Input(data={"key": "value"})
+
+    async def test_run_with_valid_input(self, workflow, valid_input):
+        """Test workflow execution with valid input."""
+        with patch("restack_ai.workflow.logger") as mock_logger:
+            output = await workflow.run(valid_input)
+
+            assert isinstance(output, {{ name }}Output)
+            assert output.result["status"] == "success"
+            assert output.steps_completed > 0
+            mock_logger.info.assert_called()
+
+    async def test_run_returns_correct_steps_count(self, workflow, valid_input):
+        """Test workflow returns correct step count."""
+        with patch("restack_ai.workflow.logger"):
+            output = await workflow.run(valid_input)
+
+            assert output.steps_completed >= 1
+
+    async def test_input_validation(self):
+        """Test input validation with invalid data."""
+        # Input with missing or invalid fields should still work with defaults
+        input_data = {{ name }}Input()
+        assert input_data.data == {}
+
+    async def test_output_schema(self, workflow, valid_input):
+        """Test output conforms to schema."""
+        with patch("restack_ai.workflow.logger"):
+            output = await workflow.run(valid_input)
+
+            # Verify all required fields present
+            assert hasattr(output, "result")
+            assert hasattr(output, "steps_completed")
+            assert isinstance(output.result, dict)
+            assert isinstance(output.steps_completed, int)
+
+    async def test_workflow_error_handling(self, workflow):
+        """Test workflow handles errors correctly."""
+        # Test error propagation
+        error_input = {{ name }}Input(data={"error": "trigger"})
+
+        with patch("restack_ai.workflow.logger"):
+            # Depending on implementation, this might raise or handle gracefully
+            try:
+                await workflow.run(error_input)
+            except Exception:
+                pass  # Expected if error handling raises
