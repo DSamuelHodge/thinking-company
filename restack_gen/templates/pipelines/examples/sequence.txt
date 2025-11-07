@@ -1,0 +1,2 @@
+# Example: sequence
+# Expression: A -> B -> C

@@ -1,0 +1,73 @@
+"""{{ name }} pipeline implementation (v1 operators)."""
+
+from __future__ import annotations
+
+import asyncio
+from typing import Any
+
+from pydantic import BaseModel, Field
+from restack_ai import workflow
+
+
+class {{ name }}Input(BaseModel):
+    """Input schema for {{ name }} pipeline."""
+
+    data: dict[str, Any] = Field(default_factory=dict, description="Input data for pipeline")
+
+
+class {{ name }}Output(BaseModel):
+    """Output schema for {{ name }} pipeline."""
+
+    result: dict[str, Any] = Field(default_factory=dict, description="Pipeline execution result")
+    steps_completed: int = Field(default=0, description="Number of steps completed")
+    order: list[str] = Field(default_factory=list, description="Execution order of steps")
+
+
+@workflow.defn(name="{{ name | snake_case }}")
+class {{ name }}:
+    """{{ description or name + ' pipeline' }}.
+
+    Operators supported (v1):
+    - sequence: A -> B
+    - optional: A ->? B (B runs only if A returns non-None)
+    - parallel: A || B (both run concurrently)
+    """
+
+    @workflow.run
+    async def run(self, input_data: {{ name }}Input) -> {{ name }}Output:
+        """
+        Execute the pipeline.
+
+        This implementation is generated from an operator expression and compiles to
+        asyncio constructs. It is Temporal-compatible and can be extended manually.
+        """
+        workflow.logger.info(
+            "Starting {{ name | snake_case }} pipeline",
+            extra={"input_data": input_data.model_dump()},
+        )
+
+        # Simple execution context (mutable)
+        ctx: dict[str, Any] = {"order": []}
+
+        # Step stubs (replace with real function/activity invocations)
+{% for step in steps %}
+        async def step_{{ step | snake_case }}(ctx: dict[str, Any]) -> Any:
+            workflow.logger.info("step: {{ step }}")
+            ctx["order"].append("{{ step }}")
+            # Return a non-None value to allow optional successors
+            return "{{ step }}"
+{% endfor %}
+
+        # === Generated execution plan ===
+{{ exec_snippets }}
+
+        workflow.logger.info(
+            "Completed {{ name | snake_case }} pipeline",
+            extra={"steps_completed": steps_completed, "order": ctx["order"]},
+        )
+
+        return {{ name }}Output(
+            result={"status": "success", "data": input_data.data},
+            steps_completed=steps_completed,
+            order=ctx["order"],
+        )

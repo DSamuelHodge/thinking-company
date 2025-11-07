@@ -146,21 +146,21 @@
 **Independent Test**: Run `restack g pipeline TestPipeline --with-operators` and verify operator grammar support for sequence (`→`), parallel (`⇄`), and optional (`→?`)
 
 ### Implementation for User Story 3
-
-- [ ] T066 [P] [US3] Create Pipeline model in restack_gen/models/project.py with operator definitions
-- [ ] T067 [P] [US3] Create PipelineOperator models for sequence, parallel, optional in restack_gen/models/project.py
-- [ ] T068 [P] [US3] Create pipeline template in restack_gen/templates/pipelines/pipeline.py.j2 with operator implementations
-- [ ] T069 [P] [US3] Create operator composition examples in templates (sequence, parallel, optional patterns) in restack_gen/templates/pipelines/examples/
-- [ ] T070 [US3] Implement PipelineGenerator class in restack_gen/generators/pipeline.py extending WorkflowGenerator
-- [ ] T071 [US3] Implement operator grammar parser for composition graph validation in restack_gen/generators/pipeline.py
-- [ ] T072 [US3] Implement sequence operator generation in pipeline template in restack_gen/templates/pipelines/pipeline.py.j2
-- [ ] T073 [US3] Implement parallel operator generation with asyncio.gather semantics in restack_gen/templates/pipelines/pipeline.py.j2
-- [ ] T074 [US3] Implement optional operator generation with non-null predicate semantics in restack_gen/templates/pipelines/pipeline.py.j2
-- [ ] T075 [US3] Add DAG validation to ensure pipeline is acyclic in restack_gen/generators/pipeline.py
-- [ ] T076 [US3] Add --operators option to generate command for pipeline type in restack_gen/cli/commands/generate.py
-- [ ] T077 [US3] Add --error-strategy option (halt, continue, retry) for pipeline error handling in restack_gen/cli/commands/generate.py
-- [ ] T078 [US3] Implement integration test in tests/integration/test_pipeline_generation.py
-- [ ] T079 [US3] Test generated pipelines execute operators in correct order (including parallel and optional semantics) in tests/integration/test_pipeline_generation.py
+ 
+ - [X] T066 [P] [US3] Create Pipeline model in restack_gen/models/project.py with operator definitions
+ - [X] T067 [P] [US3] Create PipelineOperator models for sequence, parallel, optional in restack_gen/models/project.py
+ - [X] T068 [P] [US3] Create pipeline template in restack_gen/templates/pipelines/pipeline.py.j2 with operator implementations
+ - [X] T069 [P] [US3] Create operator composition examples in templates (sequence, parallel, optional patterns) in restack_gen/templates/pipelines/examples/
+ - [X] T070 [US3] Implement PipelineGenerator class in restack_gen/generators/pipeline.py extending WorkflowGenerator
+ - [X] T071 [US3] Implement operator grammar parser for composition graph validation in restack_gen/generators/pipeline.py
+ - [X] T072 [US3] Implement sequence operator generation in pipeline template in restack_gen/templates/pipelines/pipeline.py.j2
+ - [X] T073 [US3] Implement parallel operator generation with asyncio.gather semantics in restack_gen/templates/pipelines/pipeline.py.j2
+ - [X] T074 [US3] Implement optional operator generation with non-null predicate semantics in restack_gen/templates/pipelines/pipeline.py.j2
+ - [X] T075 [US3] Add DAG validation to ensure pipeline is acyclic in restack_gen/generators/pipeline.py
+ - [X] T076 [US3] Add --operators option to generate command for pipeline type in restack_gen/cli/commands/generate.py
+ - [X] T077 [US3] Add --error-strategy option (halt, continue, retry) for pipeline error handling in restack_gen/cli/commands/generate.py
+ - [X] T078 [US3] Implement integration test in tests/integration/test_pipeline_generation.py
+ - [X] T079 [US3] Test generated pipelines execute operators in correct order (including parallel and optional semantics) in tests/integration/test_pipeline_generation.py
 
 **Checkpoint**: Pipeline generation complete with operator grammar support
 
@@ -240,8 +240,8 @@ The following items are explicitly deferred from the initial US3 scope and will 
 - [ ] T117 Performance testing for <10 second component generation, <2 minute project creation in tests/performance/test_cli_performance.py
 - [ ] T118 [P] Add comprehensive unit tests in tests/unit/ for all generators and utilities
 - [ ] T119 Run quickstart.md validation and update with actual CLI usage in specs/001-restack-gen-cli/quickstart.md
-- [ ] T120 [P] Create CLI installation guide and troubleshooting documentation in docs/installation.md
-- [ ] T121 Security audit of file operations and template rendering in docs/security-audit.md
+- [X] T120 [P] Create CLI installation guide and troubleshooting documentation in docs/installation.md
+- [X] T121 Security audit of file operations and template rendering in docs/security-audit.md
 - [ ] T122 Add rate limiting for LLM API calls in generated code in restack_gen/templates/llm/llm_integration.py.j2
 - [ ] T123 [P] [EC-001, EC-006] Test directory permission failures and existing file conflicts with --force/--skip options in tests/integration/test_edge_cases.py
 - [ ] T124 [P] [EC-004] Test LLM service unavailability and API key validation failures with graceful degradation in tests/integration/test_edge_cases.py

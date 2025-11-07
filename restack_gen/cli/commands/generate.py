@@ -10,6 +10,7 @@ import click
 from restack_gen.generators.agent import AgentGenerator
 from restack_gen.generators.base import _snake_case
 from restack_gen.generators.function import FunctionGenerator
+from restack_gen.generators.pipeline import PipelineGenerator
 from restack_gen.generators.workflow import WorkflowGenerator
 from restack_gen.utils.logging import get_logger
 
@@ -268,6 +269,89 @@ def generate_function(
 
     except (ValueError, FileExistsError) as error:
         click.echo(f"❌ Error: {error}", err=True)
+        sys.exit(1)
+
+
+@generate.command(name="pipeline")
+@click.argument("name")
+@click.option(
+    "--description",
+    "-d",
+    help="Description of the pipeline",
+)
+@click.option(
+    "--operators",
+    help="Operator expression (supports ->, ->?, || and unicode equivalents)",
+)
+@click.option(
+    "--error-strategy",
+    type=click.Choice(["halt", "continue", "retry"], case_sensitive=False),
+    default="halt",
+    show_default=True,
+    help="Error handling strategy",
+)
+@click.option(
+    "--no-tests",
+    is_flag=True,
+    help="Skip generating test files",
+)
+@click.option(
+    "--force",
+    "-f",
+    is_flag=True,
+    help="Overwrite existing files",
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Preview generation without writing files",
+)
+@click.pass_context
+def generate_pipeline(
+    ctx: click.Context,
+    name: str,
+    description: str | None,
+    operators: str | None,
+    error_strategy: str,
+    no_tests: bool,
+    force: bool,
+    dry_run: bool,
+) -> None:
+    """Generate a new pipeline (workflow with operator grammar)."""
+    project_root: Path = ctx.obj["project_root"]
+
+    try:
+        generator = PipelineGenerator()
+
+        if dry_run:
+            click.echo(f"Would generate pipeline: {name}")
+            click.echo(f"  Location: {project_root}/workflows/{_snake_case(name)}.py")
+            if operators:
+                click.echo(f"  Operators: {operators}")
+            if not no_tests:
+                click.echo(f"  Test: {project_root}/tests/test_{_snake_case(name)}.py")
+            return
+
+        generated = generator.generate(
+            name=name,
+            output_dir=project_root,
+            description=description,
+            operators=operators,
+            error_strategy=error_strategy,
+            with_tests=not no_tests,
+            force=force,
+        )
+
+        click.echo(f"✨ Generated pipeline: {name}")
+        for file_type, path in generated.items():
+            click.echo(f"  📄 {file_type}: {path.relative_to(project_root)}")
+
+    except (ValueError, FileExistsError) as error:
+        click.echo(f"❌ Error: {error}", err=True)
+        sys.exit(1)
+    except Exception as error:
+        logger.exception("Failed to generate pipeline")
+        click.echo(f"❌ Unexpected error: {error}", err=True)
         sys.exit(1)
     except Exception as error:
         logger.exception("Failed to generate function")
