@@ -74,4 +74,5 @@ def test_new_python_version_in_files(cli_runner: CliRunner, temp_dir: Path) -> N
     restack_toml = (proj / "restack.toml").read_text(encoding="utf-8")
     pyproject = (proj / "pyproject.toml").read_text(encoding="utf-8")
     assert f'python_version = "{py_ver}"' in restack_toml
-    assert f'requires-python = ">={py_ver}"' in pyproject
+    # Allow an additional upper-bound restriction in the template (e.g., <3.14)
+    assert f">={py_ver}" in pyproject

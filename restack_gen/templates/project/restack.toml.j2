@@ -34,5 +34,13 @@ default_model = "gemini-1.5-pro"
 max_tokens = 1024
 temperature = 0.2
 
-[tool_server]
-fastmcp_enabled = true
+[fastmcp]
+enabled = true
+auto_discover = true
+
+# Example server entry (added automatically when generating LLMs)
+#[[fastmcp.servers]]
+#name = "example_tools"
+#path = "tools/example_tools.py"
+#transport = "stdio"
+#autostart = true

@@ -106,15 +106,19 @@ class TestGeneratePipeline:
         class _Logger:
             def info(self, *args, **kwargs):
                 pass
+
             def error(self, *args, **kwargs):
                 pass
 
         class _WorkflowNS:
             logger = _Logger()
+
             def defn(self, name: str | None = None):
                 def deco(cls):
                     return cls
+
                 return deco
+
             def run(self, fn):
                 return fn
 
@@ -133,8 +137,8 @@ class TestGeneratePipeline:
         spec.loader.exec_module(module)  # type: ignore[attr-defined]
 
         # Instantiate and run
-        PipelineClass = getattr(module, "TestPipeline")
-        PipelineInput = getattr(module, "TestPipelineInput")
+        PipelineClass = module.TestPipeline
+        PipelineInput = module.TestPipelineInput
 
         pipeline = PipelineClass()
         input_data = PipelineInput()

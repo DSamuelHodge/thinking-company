@@ -7,11 +7,12 @@ optional (->? / →?) semantics. Generates a workflow-compatible pipeline.
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
-from restack_gen.generators.base import BaseGenerator, _snake_case
+from restack_gen.generators.base import _snake_case
 from restack_gen.generators.workflow import WorkflowGenerator
 from restack_gen.utils.validation import validate_component_name
 
@@ -126,7 +127,7 @@ class PipelineGenerator(WorkflowGenerator):
                         [
                             f"# Auto-generated smoke test for {name} pipeline",
                             "import ast",
-                            f"from pathlib import Path",
+                            "from pathlib import Path",
                             "",
                             "def test_pipeline_generated_is_valid_python(tmp_path):",
                             f"    content = Path('{workflow_file.as_posix()}').read_text()",
@@ -143,11 +144,7 @@ class PipelineGenerator(WorkflowGenerator):
     # === Parsing ===
     def _tokenize(self, expr: str) -> list[str]:
         # Normalize unicode to ascii equivalents
-        normalized = (
-            expr.replace("→?", "->?")
-            .replace("→", "->")
-            .replace("⇄", "||")
-        )
+        normalized = expr.replace("→?", "->?").replace("→", "->").replace("⇄", "||")
         # Tokens: identifiers, parentheses, operators
         pattern = r"\s*(->\?|->|\|\||[A-Za-z_][A-Za-z0-9_]*|[()])\s*"
         tokens = re.findall(pattern, normalized)
@@ -220,12 +217,14 @@ class PipelineGenerator(WorkflowGenerator):
     # === Validation & compilation ===
     def _collect_steps(self, node: Any) -> set[str]:
         steps: set[str] = set()
+
         def _walk(n: Any) -> None:
             if isinstance(n, StepNode):
                 steps.add(n.name)
             elif isinstance(n, (SeqNode, OptNode, ParNode)):
                 _walk(n.left)
                 _walk(n.right)
+
         _walk(node)
         return steps
 
@@ -277,7 +276,10 @@ class PipelineGenerator(WorkflowGenerator):
                     + f"async def {helper_name}():\n"
                     + "\n".join(h_prelude)
                     + ("\n" if h_prelude else "")
-                    + "\n".join(line.replace("await ", "return await ", 1) if "await " in line else line for line in h_lines)
+                    + "\n".join(
+                        line.replace("await ", "return await ", 1) if "await " in line else line
+                        for line in h_lines
+                    )
                     + "\n"
                 )
                 lines = [

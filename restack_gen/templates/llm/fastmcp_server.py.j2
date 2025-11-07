@@ -1,0 +1,32 @@
+"""
+FastMCP Tool Server for {{ llm_name }}
+"""
+from fastmcp import FastMCP
+from typing import Dict, List
+
+mcp = FastMCP(
+    name="{{ llm_name }}Tools",
+    instructions="""
+    This server provides tools for {{ llm_name }} agent.
+    Call available tools to execute operations.
+    """
+)
+
+@mcp.tool
+def example_tool(query: str, max_results: int = 10) -> List[Dict]:
+    """
+    Example tool implementation.
+    """
+    # TODO: Implement tool logic
+    return [{"result": "example"}]
+
+@mcp.resource("config://settings")
+def get_settings() -> Dict:
+    return {"version": "1.0.0", "enabled": True}
+
+@mcp.prompt
+def ask_about_topic(topic: str) -> str:
+    return f"Can you explain {topic} in detail?"
+
+if __name__ == "__main__":
+    mcp.run()

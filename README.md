@@ -126,16 +126,42 @@ Validate project structure and configuration.
 - `--fix` - Auto-fix issues
 - `--verbose` - Detailed diagnostic output
 
+### `restack migrate <command>`
+
+Manage project migrations for schema and structure changes.
+
+**Commands:**
+- `migrate:make <name>` - Generate a new timestamped migration file
+- `migrate:up` - Apply all pending migrations
+- `migrate:down` - Rollback the last applied migration
+- `migrate:status` - Show applied and pending migrations
+
+**Example:**
+```bash
+# Create a migration
+restack migrate:make AddNewFeature
+
+# Apply migrations
+restack migrate:up
+
+# Check status
+restack migrate:status
+
+# Rollback last migration
+restack migrate:down
+```
+
 ### `restack run:server`
 
-Start development server with auto-reload.
+Start development server with health check endpoint.
 
 **Options:**
 - `--port <port>` - Server port (default: 8000)
-- `--host <host>` - Server host (default: localhost)
-- `--workers <count>` - Worker processes
-- `--reload` - Enable auto-reload
-- `--env <environment>` - Environment (dev, prod)
+- `--host <host>` - Server host (default: 127.0.0.1)
+- `--workers <count>` - Worker processes (default: 1)
+- `--reload` - Enable auto-reload on file changes
+- `--env <environment>` - Environment mode (dev, prod, test)
+- `--health-check` - Start server, check health, then exit (for CI)
 
 ## Project Structure
 
@@ -220,7 +246,7 @@ black restack_gen tests
 
 ## Requirements
 
-- Python 3.11 or higher
+- Python 3.10–3.13 (3.14 currently unsupported by restack-ai wheels)
 - pip or uv for package management
 
 ## License
@@ -231,8 +257,128 @@ MIT License - see LICENSE file for details
 
 Contributions welcome! Please see CONTRIBUTING.md for guidelines.
 
+## Advanced Usage
+
+### Pipeline Generation with Operators
+
+Generate complex pipelines with sequence, parallel, and optional operators:
+
+```bash
+# Create a pipeline with operator composition
+restack g pipeline DataProcessingPipeline --operators "extract → transform → load"
+
+# Pipeline with error handling
+restack g pipeline RobustPipeline --error-strategy retry
+```
+
+**Operator Grammar:**
+- `→` - Sequence (execute in order)
+- `⇄` - Parallel (execute concurrently)
+- `→?` - Optional (skip if input is None)
+
+### LLM Integration with Multiple Providers
+
+```bash
+# Gemini provider
+restack g llm GeminiAssistant --provider gemini --model gemini-pro --with-prompts
+
+# OpenAI provider (stub)
+restack g llm OpenAIAssistant --provider openai --model gpt-4
+
+# With temperature and token settings
+restack g llm CustomLLM --provider gemini --temperature 0.7 --max-tokens 2048
+```
+
+### Health Checks and Auto-Repair
+
+```bash
+# Comprehensive health check
+restack doctor --verbose
+
+# Auto-fix structural issues
+restack doctor --fix
+
+# JSON output for CI/CD
+restack doctor --json
+
+# Check specific aspects
+restack doctor --check dependencies --check syntax
+```
+
+### Component Options
+
+```bash
+# Agent with custom timeout
+restack g agent TimeoutAgent --timeout 120 --description "Long-running agent"
+
+# Workflow without tests
+restack g workflow SimpleWorkflow --no-tests
+
+# Pure function (no class wrapper)
+restack g function PureTransform --pure
+
+# Force overwrite existing file
+restack g agent ExistingAgent --force
+
+# Dry-run to preview
+restack g workflow PreviewWorkflow --dry-run
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**"Not in a Restack project directory"**
+- Ensure you're in a directory with `restack.toml`
+- Run `restack new <project-name>` to create a new project
+
+**"Invalid component name"**
+- Component names must be PascalCase (e.g., MyAgent, not my-agent)
+- Project names must be kebab-case (e.g., my-project, not MyProject)
+
+**"Migration file not found"**
+- Check that `migrations/` directory exists
+- Ensure migration files follow the naming pattern: `YYYYMMDD_HHMMSS_name.py`
+
+**Syntax errors in generated code**
+- Run `restack doctor --check syntax` to identify issues
+- Check Python version compatibility (requires 3.11+)
+
+**Import errors**
+- Verify `restack-ai` SDK is installed: `pip install restack-ai`
+- Check `requirements.txt` for all dependencies
+
+### Performance Tips
+
+- Use `--no-tests` flag when generating many components
+- Enable template caching by setting `RESTACK_CACHE_TEMPLATES=1`
+- Use `--quiet` flag for batch operations
+
+### Getting Help
+
+```bash
+# General help
+restack --help
+
+# Command-specific help
+restack new --help
+restack generate --help
+restack doctor --help
+
+# Version info
+restack --version
+```
+
+## Environment Variables
+
+- `RESTACK_LOG_LEVEL` - Override logging level (DEBUG, INFO, WARNING, ERROR)
+- `RESTACK_CACHE_TEMPLATES` - Enable template caching (1 or 0)
+- `GEMINI_API_KEY` - API key for Gemini LLM integration
+
 ## Support
 
 - Documentation: [GitHub README](https://github.com/thinking-company/restack-gen#readme)
 - Issues: [GitHub Issues](https://github.com/thinking-company/restack-gen/issues)
 - Restack.io: [Official Documentation](https://restack.io/docs)
+- Installation Guide: See `docs/installation.md`
+- Security Audit: See `docs/security-audit.md`

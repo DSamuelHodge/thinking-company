@@ -1,0 +1,25 @@
+"""
+Gemini LLM Provider Implementation
+"""
+from google.generativeai import GenerativeModel
+from restack_gen.llm.providers.base import LLMProviderBase, LLMRequest, LLMResponse
+
+class GeminiProvider(LLMProviderBase):
+    def __init__(self, api_key: str, model: str = "gemini-1.5-pro"):
+        self.api_key = api_key
+        self.model = model
+        self.client = GenerativeModel(api_key=api_key, model=model)
+
+    async def chat(self, request: LLMRequest) -> LLMResponse:
+        # TODO: Implement Gemini chat logic
+        pass
+
+    def get_provider_name(self) -> str:
+        return "gemini"
+
+    def validate_config(self) -> bool:
+        return bool(self.api_key)
+
+    def estimate_cost(self, request: LLMRequest) -> float:
+        # TODO: Implement cost estimation
+        return 0.0

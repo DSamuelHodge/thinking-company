@@ -182,10 +182,9 @@ class TestProjectConfig:
             pass
 
     def test_python_version_below_minimum_fails(self) -> None:
-        """Test Python version below 3.11 is rejected."""
+        """Test Python version below 3.10 is rejected."""
         with pytest.raises(ValidationError) as exc_info:
-            ProjectConfig(name="test", python_version="3.10")
-        # The actual error message varies; just check validation failed
+            ProjectConfig(name="test", python_version="3.9")
         assert "validation error" in str(exc_info.value).lower()
 
     def test_invalid_python_version_format_fails(self) -> None:
@@ -196,9 +195,15 @@ class TestProjectConfig:
 
     def test_valid_python_versions(self) -> None:
         """Test valid Python versions are accepted."""
+        ProjectConfig(name="test", python_version="3.10")
         ProjectConfig(name="test", python_version="3.11")
         ProjectConfig(name="test", python_version="3.12")
         ProjectConfig(name="test", python_version="3.13")
+
+    def test_python_version_above_maximum_fails(self) -> None:
+        """Test Python version above 3.13 is rejected."""
+        with pytest.raises(ValidationError):
+            ProjectConfig(name="test", python_version="3.14")
 
     def test_nested_config_defaults(self) -> None:
         """Test nested configuration objects use correct defaults."""

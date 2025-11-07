@@ -45,58 +45,146 @@ pip install -r requirements.txt
 my-ai-service/
 ├── restack.toml          # Project configuration
 ├── agents/               # AI agents directory
+│   └── __init__.py
 ├── workflows/            # Temporal workflows
+│   └── __init__.py
 ├── functions/            # Reusable functions
+│   └── __init__.py
 ├── tests/               # Test suite
-└── requirements.txt     # Python dependencies
+│   ├── __init__.py
+│   └── test_sample.py
+├── pyproject.toml       # Python project metadata
+├── requirements.txt     # Python dependencies
+├── .gitignore          # Git ignore patterns
+└── .github/
+    └── workflows/
+        └── ci.yml       # CI/CD configuration
 ```
 
 ### 2. Generate Your First Agent
 
 ```bash
-# Generate an AI agent
-restack g agent ChatBot --workflows ChatWorkflow
+# Generate an AI agent with description
+restack g agent ChatBot --description "Handles chat interactions with users"
 
 # This creates:
-# - agents/chat_bot.py
-# - tests/agents/test_chat_bot.py
+# - agents/chat_bot.py (with ChatBotInput/Output Pydantic models)
+# - tests/test_chat_bot.py (with async test cases)
+```
+
+**Generated agent structure:**
+```python
+# agents/chat_bot.py
+from pydantic import BaseModel
+
+class ChatBotInput(BaseModel):
+    """Input model for ChatBot agent."""
+    message: str
+
+class ChatBotOutput(BaseModel):
+    """Output model for ChatBot agent."""
+    response: str
+
+class ChatBot:
+    """Handles chat interactions with users."""
+    
+    async def run(self, input_data: ChatBotInput) -> ChatBotOutput:
+        # Agent logic here
+        return ChatBotOutput(response="...")
 ```
 
 ### 3. Generate Supporting Components
 
 ```bash
-# Create a workflow for the agent
-restack g workflow ChatWorkflow --functions ProcessMessage,GenerateResponse
+# Create a workflow
+restack g workflow ChatWorkflow --with-functions --description "Orchestrates chat flow"
 
-# Create the functions
-restack g function ProcessMessage
-restack g function GenerateResponse
+# Create activity functions
+restack g function ProcessMessage --description "Processes incoming messages"
+restack g function GenerateResponse --timeout 30 --description "Generates AI responses"
+
+# Create a pure function (no class wrapper)
+restack g function ValidateInput --pure
 ```
 
 ### 4. Add LLM Integration
 
 ```bash
 # Generate LLM integration with Gemini
-restack g llm SmartResponder --provider gemini --with-prompts
+restack g llm SmartResponder --provider gemini --with-prompts --model gemini-pro
+
+# This creates:
+# - llm/smart_responder.py (LLM client)
+# - llm/providers/gemini.py (Provider implementation)
+# - prompts/smart_responder/ (Prompt templates with versioning)
+# - tools/smart_responder_tools.py (FastMCP server)
 
 # Set up your API key
 export GEMINI_API_KEY="your-api-key-here"
 ```
 
-### 5. Run Health Check
+### 5. Generate a Complex Pipeline
+
+```bash
+# Create a data processing pipeline with operators
+restack g pipeline DataPipeline --operators "extract → validate → transform → load"
+
+# With error handling
+restack g pipeline RobustPipeline --error-strategy retry --description "Fault-tolerant pipeline"
+```
+
+### 6. Run Health Check
 
 ```bash
 # Verify everything is set up correctly
 restack doctor
 
-# Should show all green checkmarks ✅
+# Output:
+# ✅ Project structure valid
+# ✅ Configuration schema valid
+# ✅ All Python files syntactically correct
+# ✅ restack-ai SDK installed and compatible
+
+# Check specific aspects
+restack doctor --check dependencies --verbose
+
+# Auto-fix issues
+restack doctor --fix
 ```
 
-### 6. Start Development Server
+### 7. Manage Migrations
 
 ```bash
-# Start the development server
-restack run:server --reload
+# Create a migration for schema changes
+restack migrate:make AddUserAuthentication
+
+# Check migration status
+restack migrate:status
+# Output:
+# Migration Status:
+#   ⏳ 20251106_140532_add_user_authentication (pending)
+
+# Apply pending migrations
+restack migrate:up
+# Output:
+# ✅ Applied 1 migration(s):
+#    20251106_140532_add_user_authentication
+
+# Rollback if needed
+restack migrate:down
+```
+
+### 8. Start Development Server
+
+```bash
+# Start the development server with auto-reload
+restack run:server --reload --port 8000
+
+# Health check endpoint available at:
+# http://127.0.0.1:8000/health
+
+# For CI/CD health checks
+restack run:server --health-check
 
 # Visit: http://localhost:8000/health
 ```
@@ -356,6 +444,110 @@ restack g agent MyAgent --template v1.0
 ```
 
 #### LLM Integration Issues
+```bash
+# Verify API keys are set
+echo $GEMINI_API_KEY
+
+# Test LLM integration
+restack doctor --check llm
+
+# Generate with explicit provider
+restack g llm MyLLM --provider gemini --model gemini-pro
+```
+
+## Real-World Examples
+
+### Example 1: Customer Support Bot
+
+```bash
+# Create project
+restack new customer-support-bot
+cd customer-support-bot
+
+# Generate core components
+restack g agent SupportAgent --description "Handles customer inquiries"
+restack g workflow SupportWorkflow --description "Orchestrates support flow"
+restack g function ClassifyQuery --description "Classifies customer query type"
+restack g function GenerateResponse --description "Generates contextual response"
+restack g llm ResponseGenerator --provider gemini --with-prompts
+
+# Validate setup
+restack doctor
+```
+
+### Example 2: Data Processing Pipeline
+
+```bash
+# Create project
+restack new data-pipeline
+cd data-pipeline
+
+# Generate pipeline components
+restack g pipeline ETLPipeline --operators "extract → validate → transform → load"
+restack g function ExtractData --description "Extracts data from sources"
+restack g function ValidateData --pure --description "Validates data integrity"
+restack g function TransformData --timeout 120 --description "Transforms data format"
+restack g function LoadData --description "Loads data to destination"
+
+# Add migration for schema changes
+restack migrate:make AddDataValidation
+
+# Run health checks
+restack doctor --verbose
+```
+
+### Example 3: Multi-Agent Research System
+
+```bash
+# Create project
+restack new research-system
+cd research-system
+
+# Generate research agents
+restack g agent SearchAgent --description "Searches for information"
+restack g agent AnalysisAgent --description "Analyzes search results"
+restack g agent SummaryAgent --description "Generates summaries"
+
+# Generate orchestration workflow
+restack g workflow ResearchWorkflow --with-functions
+
+# Add LLM for analysis
+restack g llm ResearchLLM --provider gemini --with-prompts --model gemini-1.5-pro
+
+# Create support functions
+restack g function FetchArticles
+restack g function ExtractCitations --pure
+restack g function GenerateReport
+
+# Start dev server
+restack run:server --reload --port 8080
+```
+
+## Next Steps
+
+- Read the [full documentation](../README.md)
+- Explore the [API reference](./api-reference.md)
+- Check out [example projects](./examples/)
+- Join the [community discussions](https://github.com/thinking-company/restack-gen/discussions)
+
+## Getting Help
+
+```bash
+# Command-specific help
+restack new --help
+restack generate --help
+restack doctor --help
+restack migrate --help
+
+# Version information
+restack --version
+
+# Global options
+restack --verbose new my-project
+restack --quiet generate agent QuietAgent
+```
+
+For more information, see the [installation guide](../../docs/installation.md) and [security audit](../../docs/security-audit.md).
 ```bash
 # Check API key configuration
 echo $GEMINI_API_KEY

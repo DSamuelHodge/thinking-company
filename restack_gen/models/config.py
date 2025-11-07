@@ -130,11 +130,11 @@ class ProjectConfig(BaseModel):
     @field_validator("python_version")
     @classmethod
     def validate_python_version(cls, v: str) -> str:
-        """Validate Python version is 3.11 or higher."""
+        """Validate Python version is within supported range (3.10–3.13)."""
         try:
             major, minor = map(int, v.split(".")[:2])
-            if major < 3 or (major == 3 and minor < 11):
-                raise ValueError("Python version must be 3.11 or higher")
+            if major != 3 or minor < 10 or minor > 13:
+                raise ValueError("Python version must be between 3.10 and 3.13")
         except (ValueError, AttributeError):
-            raise ValueError("Invalid Python version format (expected: 3.11)") from None
+            raise ValueError("Invalid Python version format (expected: 3.x)") from None
         return v

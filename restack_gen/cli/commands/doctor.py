@@ -104,7 +104,7 @@ def _check_syntax(project_root: Path) -> CheckResult:
     return CheckResult("Syntax", ok=ok, details=details)
 
 
-MIN_RESTACK_AI_VERSION = "0.1.0"
+MIN_RESTACK_AI_VERSION = "0.0.115"
 
 
 def _parse_version(raw: str) -> tuple[int, int, int]:

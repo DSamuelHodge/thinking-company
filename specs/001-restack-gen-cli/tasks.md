@@ -184,26 +184,26 @@ The following items are explicitly deferred from the initial US3 scope and will 
 
 ### Implementation for User Story 4
 
-- [ ] T080 [P] [US4] Create LLMIntegration model in restack_gen/models/project.py with provider, model, prompts
-- [ ] T081 [P] [US4] Create PromptTemplate model for versioned prompts in restack_gen/models/project.py
-- [ ] T082 [P] [US4] Create LLM integration template in restack_gen/templates/llm/llm_integration.py.j2
-- [ ] T083 [P] [US4] Create Gemini provider template with google-generativeai integration in restack_gen/templates/llm/providers/gemini.py.j2
-- [ ] T084 [P] [US4] Create abstract provider interface for multi-provider extensibility in restack_gen/templates/llm/providers/base.py.j2
-- [ ] T085 [P] [US4] Create prompt versioning structure templates in restack_gen/templates/llm/prompts/
-- [ ] T086 [US4] Implement LLMGenerator class in restack_gen/generators/llm.py extending BaseGenerator
-- [ ] T087 [US4] Implement provider-specific code generation (Gemini, OpenAI, Anthropic stubs) in restack_gen/generators/llm.py
-- [ ] T088 [US4] Implement prompt template generation with versioning support in restack_gen/generators/llm.py
-- [ ] T089 [US4] Add --provider option to generate command for LLM type in restack_gen/cli/commands/generate.py
-- [ ] T090 [US4] Add --model option for specific model selection in restack_gen/cli/commands/generate.py
-- [ ] T091 [US4] Add --with-prompts flag to include prompt versioning setup in restack_gen/cli/commands/generate.py
-- [ ] T092 [US4] Add --max-tokens and --temperature options for LLM configuration in restack_gen/cli/commands/generate.py
-- [ ] T093 [P] [US4] Create FastMCP tool server template in restack_gen/templates/llm/fastmcp_server.py.j2
-- [ ] T094 [US4] Implement FastMCP tool registration and routing in generated code in restack_gen/templates/llm/fastmcp_server.py.j2
-- [ ] T095 [US4] Add FastMCP server configuration to generated restack.toml in restack_gen/templates/project/restack.toml.j2
-- [ ] T096 [US4] Implement integration test for FastMCP tool server in tests/integration/test_fastmcp.py
-- [ ] T097 [US4] Add LLM provider API key validation in generated code in restack_gen/templates/llm/llm_integration.py.j2
-- [ ] T098 [US4] Implement integration test in tests/integration/test_llm_generation.py
-- [ ] T099 [US4] Test multi-provider support and prompt versioning structure in tests/integration/test_llm_generation.py
+ - [X] T080 [P] [US4] Create LLMIntegration model in restack_gen/models/project.py with provider, model, prompts
+ - [X] T081 [P] [US4] Create PromptTemplate model for versioned prompts in restack_gen/models/project.py
+ - [X] T082 [P] [US4] Create LLM integration template in restack_gen/templates/llm/llm_integration.py.j2
+ - [X] T083 [P] [US4] Create Gemini provider template with google-generativeai integration in restack_gen/templates/llm/providers/gemini.py.j2
+ - [X] T084 [P] [US4] Create abstract provider interface for multi-provider extensibility in restack_gen/templates/llm/providers/base.py.j2
+ - [X] T085 [P] [US4] Create prompt versioning structure templates in restack_gen/templates/llm/prompts/
+ - [X] T086 [US4] Implement LLMGenerator class in restack_gen/generators/llm.py extending BaseGenerator
+ - [X] T087 [US4] Implement provider-specific code generation (Gemini, OpenAI, Anthropic stubs) in restack_gen/generators/llm.py
+ - [X] T088 [US4] Implement prompt template generation with versioning support in restack_gen/generators/llm.py
+ - [X] T089 [US4] Add --provider option to generate command for LLM type in restack_gen/cli/commands/generate.py
+ - [X] T090 [US4] Add --model option for specific model selection in restack_gen/cli/commands/generate.py
+ - [X] T091 [US4] Add --with-prompts flag to include prompt versioning setup in restack_gen/cli/commands/generate.py
+ - [X] T092 [US4] Add --max-tokens and --temperature options for LLM configuration in restack_gen/cli/commands/generate.py
+ - [X] T093 [P] [US4] Create FastMCP tool server template in restack_gen/templates/llm/fastmcp_server.py.j2
+ - [X] T094 [US4] Implement FastMCP tool registration and routing in generated code in restack_gen/templates/llm/fastmcp_server.py.j2
+ - [X] T095 [US4] Add FastMCP server configuration to generated restack.toml in restack_gen/templates/project/restack.toml.j2
+ - [X] T096 [US4] Implement integration test for FastMCP tool server in tests/integration/test_fastmcp.py
+ - [X] T097 [US4] Add LLM provider API key validation in generated code in restack_gen/templates/llm/llm_integration.py.j2
+ - [X] T098 [US4] Implement integration test in tests/integration/test_llm_generation.py
+ - [X] T099 [US4] Test multi-provider support and prompt versioning structure in tests/integration/test_llm_generation.py
 
 **Checkpoint**: All P3 user stories complete - full CLI functionality available
 
@@ -213,15 +213,15 @@ The following items are explicitly deferred from the initial US3 scope and will 
 
 **Purpose**: Remaining CLI commands for complete feature set
 
-- [ ] T100 [P] Create Migration model in restack_gen/models/migration.py with up/down methods
-- [ ] T101 [P] Create MigrationManager in restack_gen/migrations/manager.py for migration execution
-- [ ] T102 [P] Implement migration file generation with timestamp-based naming in restack_gen/migrations/manager.py
-- [ ] T103 [P] Implement migration history tracking in .restack/migrations.json
-- [ ] T104 Implement `restack run:server` command in restack_gen/cli/commands/server.py
-- [ ] T105 Add server options: --port, --host, --workers, --reload, --env in restack_gen/cli/commands/server.py
-- [ ] T106 Implement development server startup with auto-reload support in restack_gen/cli/commands/server.py
-- [ ] T107 Implement health check endpoint for server validation in restack_gen/cli/commands/server.py
-- [ ] T108 [P] Add integration test for server command in tests/integration/test_server.py
+- [X] T100 [P] Create Migration model in restack_gen/models/migration.py with up/down methods
+- [X] T101 [P] Create MigrationManager in restack_gen/migrations/manager.py for migration execution
+- [X] T102 [P] Implement migration file generation with timestamp-based naming in restack_gen/migrations/manager.py
+- [X] T103 [P] Implement migration history tracking in .restack/migrations.json
+- [X] T104 Implement `restack run:server` command in restack_gen/cli/commands/server.py
+- [X] T105 Add server options: --port, --host, --workers, --reload, --env in restack_gen/cli/commands/server.py
+- [X] T106 Implement development server startup with auto-reload support in restack_gen/cli/commands/server.py
+- [X] T107 Implement health check endpoint for server validation in restack_gen/cli/commands/server.py
+- [X] T108 [P] Add integration test for server command in tests/integration/test_server.py
 
 ---
 
@@ -229,14 +229,14 @@ The following items are explicitly deferred from the initial US3 scope and will 
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T109 [P] Create comprehensive CLI documentation in README.md at repository root
-- [ ] T110 [P] Add command examples and usage patterns to quickstart.md in specs/001-restack-gen-cli/quickstart.md
+- [X] T109 [P] Create comprehensive CLI documentation in README.md at repository root
+- [X] T110 [P] Add command examples and usage patterns to quickstart.md in specs/001-restack-gen-cli/quickstart.md
 - [ ] T111 [P] Implement --json output format for all commands (for scripting) in restack_gen/cli/main.py
-- [ ] T112 [P] Add shell completion support (bash, zsh, fish) using Click in restack_gen/cli/main.py
-- [ ] T113 Implement error message improvements with actionable suggestions in restack_gen/cli/commands/generate.py
-- [ ] T114 Add emoji and color formatting for CLI output using Click styling in restack_gen/cli/main.py
-- [ ] T115 [P] Create template version checking for backward compatibility in restack_gen/generators/base.py
-- [ ] T116 [P] Implement template caching for performance optimization in restack_gen/generators/base.py
+- [X] T112 [P] Add shell completion support (bash, zsh, fish) using Click in restack_gen/cli/main.py
+- [X] T113 Implement error message improvements with actionable suggestions in restack_gen/cli/commands/generate.py
+- [X] T114 Add emoji and color formatting for CLI output using Click styling in restack_gen/cli/main.py
+- [X] T115 [P] Create template version checking for backward compatibility in restack_gen/generators/base.py
+- [X] T116 [P] Implement template caching for performance optimization in restack_gen/generators/base.py
 - [ ] T117 Performance testing for <10 second component generation, <2 minute project creation in tests/performance/test_cli_performance.py
 - [ ] T118 [P] Add comprehensive unit tests in tests/unit/ for all generators and utilities
 - [ ] T119 Run quickstart.md validation and update with actual CLI usage in specs/001-restack-gen-cli/quickstart.md

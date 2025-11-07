@@ -22,7 +22,7 @@ def minimal_project(tmp_path: Path) -> Path:
     )
     # Minimal requirements file to satisfy dependency check (include restack-ai)
     (proj / "requirements.txt").write_text(
-        "click\njinja2\npydantic\nrestack-ai>=0.1.0\n", encoding="utf-8"
+        "click\njinja2\npydantic\nrestack-ai>=0.0.115\n", encoding="utf-8"
     )
     for d in ["agents", "workflows", "functions", "tests"]:
         (proj / d).mkdir()
@@ -69,7 +69,7 @@ def test_doctor_fix_creates_missing_dirs(monkeypatch, tmp_path: Path) -> None:
         "[project]\nname='fix-project'\nversion='0.1.0'\npython_version='3.11'\n",
         encoding="utf-8",
     )
-    (proj / "requirements.txt").write_text("restack-ai>=0.1.0\n", encoding="utf-8")
+    (proj / "requirements.txt").write_text("restack-ai>=0.0.115\n", encoding="utf-8")
     # Run doctor with --fix to create missing directories
     monkeypatch.chdir(proj)
     runner = CliRunner()
@@ -86,7 +86,7 @@ def test_doctor_dependency_version_below_min(monkeypatch, tmp_path: Path) -> Non
         "[project]\nname='ver-project'\nversion='0.1.0'\npython_version='3.11'\n",
         encoding="utf-8",
     )
-    # Version intentionally below minimum (0.1.0) to trigger failure
+    # Version intentionally below minimum (0.0.115) to trigger failure
     (proj / "requirements.txt").write_text("restack-ai==0.0.9\n", encoding="utf-8")
     for d in ["agents", "workflows", "functions", "tests"]:
         (proj / d).mkdir()
@@ -134,5 +134,5 @@ def test_doctor_verbose_json(minimal_project: Path, monkeypatch) -> None:
     assert result.exit_code == 0, result.output
     parsed = json.loads(result.output)
     assert "meta" in parsed
-    assert parsed["meta"]["min_restack_ai_version"] == "0.1.0"
+    assert parsed["meta"]["min_restack_ai_version"] == "0.0.115"
     assert "project_root" in parsed["meta"]

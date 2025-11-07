@@ -1,0 +1,24 @@
+"""
+Anthropic LLM Provider Implementation (stub)
+"""
+from llm.providers.base import LLMProviderBase, LLMRequest, LLMResponse
+
+class AnthropicProvider(LLMProviderBase):
+    def __init__(self, api_key: str, model: str = "claude-3"):
+        self.api_key = api_key
+        self.model = model
+        # TODO: Initialize Anthropic client
+
+    async def chat(self, request: LLMRequest) -> LLMResponse:
+        # TODO: Implement Anthropic chat logic
+        raise NotImplementedError("Anthropic provider is a stub in this version.")
+
+    def get_provider_name(self) -> str:
+        return "anthropic"
+
+    def validate_config(self) -> bool:
+        return bool(self.api_key)
+
+    def estimate_cost(self, request: LLMRequest) -> float:
+        # TODO: Implement cost estimation
+        return 0.0
